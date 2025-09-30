@@ -1,0 +1,31 @@
+# Node modules and build outputs
+node_modules/
+build/
+dist/
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+.venv/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# SQLite database file
+backend/app/app.db
+
+# Docker artifacts
+*.log
+*.pid
+.docker-compose*
+frontend/docker-dist/
+
+# .idea file
+.idea/

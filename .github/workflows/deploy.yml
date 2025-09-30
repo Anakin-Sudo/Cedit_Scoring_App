@@ -1,0 +1,70 @@
+name: Deploy to Azure Container Instances
+
+on:
+  workflow_dispatch:
+    inputs:
+      env-file:
+        description: 'Base64‑encoded contents of the .env file'
+        required: false
+        default: ''
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Write the .env file from the workflow input or secret
+      - name: Populate .env
+        run: |
+          if [ -n "$ENV_FILE" ]; then
+            echo "$ENV_FILE" | base64 -d > credit_scoring_app/.env
+          elif [ -n "${{ github.event.inputs.env-file }}" ]; then
+            echo "${{ github.event.inputs.env-file }}" | base64 -d > credit_scoring_app/.env
+          else
+            echo "❌ No environment file provided. Set the ENV_FILE secret or supply env-file input."
+            exit 1
+          fi
+        env:
+          ENV_FILE: ${{ secrets.ENV_FILE }}
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Set up Python for model download
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install backend dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r credit_scoring_app/backend/requirements.txt
+
+      - name: Download latest model from Azure ML
+        run: |
+          bash credit_scoring_app/bash_scripts/download_model.sh
+
+      - name: Build, push & deploy backend
+        run: |
+          bash credit_scoring_app/bash_scripts/deploy_backend.sh
+
+      - name: Set up Node.js for frontend build
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install frontend dependencies
+        run: |
+          cd credit_scoring_app/frontend
+          npm install
+
+      - name: Build, push & deploy frontend
+        run: |
+          bash credit_scoring_app/bash_scripts/deploy_frontend.sh
