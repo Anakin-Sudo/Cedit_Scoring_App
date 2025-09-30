@@ -175,4 +175,4 @@ For production monitoring we recommend enabling diagnostic logging on your
 ACI containers and forwarding logs to a Log Analytics workspace.  You can
 also configure Application Insights by installing the `opencensus-ext-azure`
 package and adding a trace exporter in `backend/app/utils.py`.  See
-`SETUP.md` for pointers on enabling these features.
+[Setup guide](SETUP.md) for pointers on enabling these features.
