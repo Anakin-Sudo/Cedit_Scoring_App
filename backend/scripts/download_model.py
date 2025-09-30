@@ -3,7 +3,7 @@ Helper script for downloading a registered ML model from Azure Machine Learning.
 
 Usage
 -----
-Run this script via `bash_scripts/download_model.sh` which populates most
+Run this script via `bash_scripts/download_best_model_pointer.sh` which populates most
 arguments from your `.env`.  You can also invoke it directly:
 
 ```
@@ -22,7 +22,7 @@ registered in the workspace.
 Requirements
 ------------
 This script depends on `azure-ai-ml` and `mlflow`.  See
-`backend/requirements.txt` for details.  You must also be authenticated to
+`backend/requirements-a.txt` for details.  You must also be authenticated to
 Azure (e.g. via `az login`) for `DefaultAzureCredential` to resolve your
 credentials.
 """

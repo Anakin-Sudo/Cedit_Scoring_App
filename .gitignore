@@ -29,3 +29,7 @@ frontend/docker-dist/
 
 # .idea file
 .idea/
+
+# Alternative files, not to be carried to remote repo
+*-a.md
+*-a

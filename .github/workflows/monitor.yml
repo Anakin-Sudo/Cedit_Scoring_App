@@ -1,0 +1,25 @@
+name: Monitor Drift
+
+on:
+  schedule:
+    - cron: "0 3 * * 0" # every Sunday at 03:00 UTC
+  workflow_dispatch:
+
+jobs:
+  drift-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install deps
+        run: |
+          pip install pandas numpy scipy sqlite-utils
+
+      - name: Run drift check
+        run: |
+          python credit_scoring_app/backend/scripts/check_drift.py
